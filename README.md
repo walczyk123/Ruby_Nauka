@@ -38,11 +38,11 @@ Instalacja RBENV
 >echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 >exec $SHELL   
 
-Tu mozna dac inna wersje, a nawet trzeba, po to jest RBENV
+Tu mozna dac inna wersje, a nawet trzeba, po to jest RBENV   
 
->rbenv install 2.7.0 
->rbenv global 2.7.0
->ruby -v   
+>rbenv install 2.7.0    
+>rbenv global 2.7.0   
+>ruby -v     
 
 Instalacja bundlera
 >gem install bundler   
