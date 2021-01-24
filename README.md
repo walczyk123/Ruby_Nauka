@@ -21,7 +21,7 @@ Jest to repozytorium, w którym zebrałem rzeczy przydatne do nauki języka Ruby
 
 ### Zamiana Ruby na RBENV
 
-Usuniecie ruby
+Usuniecie ruby jak juz bylo zainstalowane wczesniej
 >sudo apt-get remove ruby   
 
 Instalacja RBENV
@@ -38,8 +38,10 @@ Instalacja RBENV
 >echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 >exec $SHELL   
 
->rbenv install 2.3.1   
->rbenv global 2.3.1   
+Tu mozna dac inna wersje, a nawet trzeba, po to jest RBENV
+
+>rbenv install 2.7.0 
+>rbenv global 2.7.0
 >ruby -v   
 
 Instalacja bundlera
