@@ -1,5 +1,6 @@
 
 class XO
+
   def start
     gamemode=say_hello()
     #puts(gamemode) #tymczasowo to tu wisi do debuggowania
@@ -34,8 +35,13 @@ class XO
     return 4
   end
 
-  def pvp
+  def pvp()
     puts "AAAAA ROZRUBA"
+
+    # puts board.at(1)
+    board=Matrix.build(3) { " " }
+    p1 = PLAYER.new(1,:x,board)
+    p2 = PLAYER.new(2,:o,board)
   end
   def pve
     puts "wiec wybrales smierc, rozERWE CIE NA KAWałki"
@@ -46,10 +52,68 @@ class XO
   def zjebales_gre
     puts "miales tylko jedno robote"
   end
+
+
+
+  def check
+    return false
+  end
+
 end
 
+class PLAYER
+  def initialize(id,sign,board)
+    @pl_id = id
+    @pl_sign = sign
+    @board = board
+
+    show
+    ins=insert
+
+    puts "wrong char!" if ins == 0
+    puts "number is out of boundary!" if ins == 1
+    puts "spot has been already taken!" if ins == 2
+  end
+
+  def show
+    puts "Your turn Player #{@pl_id}, type x,y: "
+    puts "   │ 1 │ 2 │ 3 │"
+    puts "───┼───┼───┼───┤"
+    puts " 1 │ #{@board[0,0]} │ #{@board[0,1]} │ #{@board[0,2]} │"
+    puts "───┼───┼───┼───┤"
+    puts " 2 │ #{@board[1,0]} │ #{@board[1,1]} │ #{@board[1,2]} │"
+    puts "───┼───┼───┼───┤"
+    puts " 3 │ #{@board[2,0]} │ #{@board[2,1]} │ #{@board[2,2]} │"
+  end
+  def insert
+    place = gets.chomp
+    cords = place.split(",")
+    puts "X: #{cords[0]}, Y: #{cords[1]}"
+    return 0 until num?(cords[0]) && num?(cords[1])
+    return 1 until good_num?(cords[0]) && good_num?(cords[1])
+    # return 2 until empty?(cords)
+  end
+
+  def num?(str)
+    !!Integer(str)
+  rescue ArgumentError, TypeError
+    false
+  end
+
+  def good_num?(str)
+    Integer(str) == 1 || Integer(str) == 2 || Integer(str) == 3
+  end
+
+  def empty?(cords)
+    x=cords[0]
+    y=cords[1]
+    true if @board[x,y].include?(:x)
+  end
 
 
+end
+
+require 'matrix'
 c = XO.new
 c.start
 
