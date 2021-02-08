@@ -1,52 +1,47 @@
 class XO
   def start
-    gamemode = say_hello()
-    #puts(gamemode) #tymczasowo to tu wisi do debuggowania
-    zjebales_gre() if gamemode == 4 # tez tymczasowe rozwiazanie xd
-
-    pvp() if gamemode == 1
-    pve() if gamemode == 2
-    eve() if gamemode == 3
+    say_hello
+    set_game_mode if STDIN.gets.chomp == "y"
+    board = Matrix.build(3) { " " }
+    pvp(board) if set_game_mode == '1'
+    pve(board) if set_game_mode == '2'
+    eve(board) if set_game_mode == '3'
+    zjebales_gre
   end
 
   def say_hello
     puts "Welcome Adventurer"
     sleep 0.5
     puts "Do you want to play a game? [y / n]"
-    prompt = STDIN.gets.chomp
-    return unless prompt == 'y'
-    mode = eager()
-    #unless prompt == 'n' ? return zjebales_gre() , mode=eager() end
   end
 
-  def eager
+  def set_game_mode
     puts "Excelent"
     sleep 0.5
     puts "Pick game mode:"
     sleep 0.5
     puts "1. PVP \n2. PVE \n3. EVE"
-    prompt = STDIN.gets.chomp
-    return 1 if prompt == '1'
-    return 2 if prompt == '2'
-    return 3 if prompt == '3'
-    return 4
+    STDIN.gets.chomp
   end
 
-  def pvp()
+  def pvp(board)
     puts "Let's fight"
-    board = Matrix.build(3) { " " }
-
+    p1 = PLAYER.new(1, "x", board)
+    p2 = PLAYER.new(2, "o", board)
     until check
-      p1 = PLAYER.new(1, "x", board) # pasowalo by symbole, chwilowo nad tym walcze
-      p2 = PLAYER.new(2, "o", board)
+      # zrobic wyswietlanie na osobnej klasie
+      #board
+      p1.play_turn
+      #board
+      p2.play_turn
     end
   end
 
-  def pve
+  def pve(board)
     puts "wiec wybrales smierc, rozERWE CIE NA KAWałki"
   end
 
-  def eve
+  def eve(board)
     puts "I rzekl mędrzec do kutasów - walczcie, kto wygra, czeka go nagroda"
   end
 
@@ -65,7 +60,9 @@ class PLAYER
     @pl_id = id
     @pl_sign = sign
     @board = board
+  end
 
+  def play_turn
     show
     insert(sign)
   end
@@ -82,58 +79,35 @@ class PLAYER
   end
 
   def insert(sign)
-    place = gets.chomp
-    cords = place.split(",")
-    cords_int = cords.map(&:to_i)
-    puts "X: #{Integer(cords[0])}, Y: #{cords[1]}"
-
-    # z jakiegos powodu nie dziala, zapytać!
-    # update chyba naprawilem
-    # update 2 chyba nie
-    #good?(cords,cords_int) ? (return true) : (return false)
-
-    if good?(cords)
-      @board[cords_int[0], cords_int[1]] = sign
-    else
-
+    while true
+      place = gets.chomp
+      cords = place.split(",")
+      puts "X: #{Integer(cords[0])}, Y: #{cords[1]}"
+      (cords_int = good?(cords)) ? (@board[cords_int[0], cords_int[1]] = sign) : false
     end
-    puts " w8"
   end
 
   def good?(cords)
-    #tu mi sie nie podobaja ify i trzeba pogadac z Radkiem:
-    # 1. za duzo zbyt drobnych moim zdaniem
-    # 2. if !true sie jakos zamienialo unless czy tam until (zapytac) update: zrobione przy empty?
-    # 3. moze da sie to wyciagnac calkiem w inne miejsce
-    if !num?(cords[0]) && !num?(cords[1])
-      puts "wrong char!"
-      false
-    end
-    if !good_num?(cords[0]) && !good_num?(cords[1])
-      puts "number is out of boundary!"
-      false
-    end
+    return puts "wrong char!"  unless num?(cords[0]) && num?(cords[1])
+    return puts "number is out of boundary!"  unless good_num?(cords[0]) && good_num?(cords[1])
     cords_int = cords.map(&:to_i)
-    unless empty?(cords_int)
-      puts "spot has been already taken!"
-      false
-    end
-      true
+    return puts "spot has been already taken!"  unless empty?(cords_int)
+    cords_int
   end
 
   def num?(str)
     !!Integer(str)
-  rescue ArgumentError, TypeError
+    rescue ArgumentError, TypeError
     false
   end
 
   def good_num?(str)
-    Integer(str) == 1 || Integer(str) == 2 || Integer(str) == 0
+    [0, 1, 2].include?(Integer(str))
   end
 
-  def empty?(cords)
-    x = cords[0]
-    y = cords[1]
+  def empty?(cords_int)
+    x = cords_int[0]
+    y = cords_int[1]
     true if @board[x, y] == " "
   end
 end
