@@ -16,3 +16,7 @@ Uwagi 07.02
 - co do kodu, popytac przy komentarzach
 - ogarnac powtorzenie ruchu jezeli ten był zły, np. wspolrzedna to litera
 - wymyslec sprawdzanie w lini
+
+Uwagi 09.02  
+- petla przy wprowadzaniu wspolrzednych - nieskonczona gdy dobre kordy, poprawic
+

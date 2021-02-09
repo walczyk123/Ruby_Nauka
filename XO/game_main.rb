@@ -1,12 +1,12 @@
 class XO
   def start
     say_hello
-    set_game_mode if STDIN.gets.chomp == "y"
-    board = Matrix.build(3) { " " }
-    pvp(board) if set_game_mode == '1'
-    pve(board) if set_game_mode == '2'
-    eve(board) if set_game_mode == '3'
-    zjebales_gre
+    game_mode if STDIN.gets.chomp == "y"
+    gam_mod = STDIN.gets.chomp
+    pvp if gam_mod == '1'
+    pve if gam_mod == '2'
+    eve if gam_mod == '3'
+    stupid_error
   end
 
   def say_hello
@@ -15,37 +15,37 @@ class XO
     puts "Do you want to play a game? [y / n]"
   end
 
-  def set_game_mode
+  def game_mode
     puts "Excelent"
     sleep 0.5
     puts "Pick game mode:"
     sleep 0.5
     puts "1. PVP \n2. PVE \n3. EVE"
-    STDIN.gets.chomp
   end
 
-  def pvp(board)
+  def pvp
     puts "Let's fight"
-    p1 = PLAYER.new(1, "x", board)
-    p2 = PLAYER.new(2, "o", board)
+    b1 = BOARD.new(3)
+    b1.generate
+    p1 = PLAYER.new(1, "x", b1)
+    p2 = PLAYER.new(2, "o", b1)
     until check
-      # zrobic wyswietlanie na osobnej klasie
-      #board
+      b1.show
       p1.play_turn
-      #board
+      b1.show
       p2.play_turn
     end
   end
 
-  def pve(board)
+  def pve
     puts "wiec wybrales smierc, rozERWE CIE NA KAWałki"
   end
 
-  def eve(board)
+  def eve
     puts "I rzekl mędrzec do kutasów - walczcie, kto wygra, czeka go nagroda"
   end
 
-  def zjebales_gre
+  def stupid_error
     puts "miales tylko jedno robote"
   end
 
@@ -56,35 +56,74 @@ class XO
 end
 
 class PLAYER
-  def initialize(id, sign, board)
+  def initialize(id, sign, arena)
     @pl_id = id
     @pl_sign = sign
-    @board = board
+    @global_board= arena
   end
 
   def play_turn
-    show
-    insert(sign)
+    puts "Your turn Player #{@pl_id}, type x,y: "
+    @global_board.insert(@pl_sign)
+  end
+
+end
+
+class BOARD
+  def initialize(size)
+    @size=size
+  end
+
+  def generate
+    @board = Matrix.build(@size) { " " }
   end
 
   def show
-    puts "Your turn Player #{@pl_id}, type x,y: "
-    puts "   │ 1 │ 2 │ 3 │"
-    puts "───┼───┼───┼───┤"
-    puts " 1 │ #{@board[0, 0]} │ #{@board[0, 1]} │ #{@board[0, 2]} │"
-    puts "───┼───┼───┼───┤"
-    puts " 2 │ #{@board[1, 0]} │ #{@board[1, 1]} │ #{@board[1, 2]} │"
-    puts "───┼───┼───┼───┤"
-    puts " 3 │ #{@board[2, 0]} │ #{@board[2, 1]} │ #{@board[2, 2]} │"
+    header
+    (1..(@size)).each do |a|
+      contour
+      horizontal(a)
+    end
+  end
+
+  def header
+    print "   │"
+    (1..(@size)).each do |a|
+      print " " + (a-1).to_s + " │"
+    end
+    print("\n")
+  end
+
+  def contour
+    (1..@size + 1).each do
+      print "───┼"
+      end
+    print("\n")
+  end
+
+  def horizontal(row)
+     print " #{row-1} │"
+    (1..@size).each do |a|
+      print " " + @board[a-1, row-1].to_s+ " │"
+    end
+    print("\n")
   end
 
   def insert(sign)
-    while true
-      place = gets.chomp
-      cords = place.split(",")
-      puts "X: #{Integer(cords[0])}, Y: #{cords[1]}"
-      (cords_int = good?(cords)) ? (@board[cords_int[0], cords_int[1]] = sign) : false
+    #while true
+    place = gets.chomp
+    cords = place.split(",")
+    puts "X: #{Integer(cords[0])}, Y: #{cords[1]}"
+    cords_int = cords.map(&:to_i)
+    if good?(cords)
+      (@board[cords_int[0], cords_int[1]] = sign)
+      true
+    else
+      false
     end
+    #cos nie tak z tym zapisem, jezeli jest dobry to chce non stop wpisywac
+    #(cords_int = good?(cords)) ? (@board[cords_int[0], cords_int[1]] = sign) : false
+    #end
   end
 
   def good?(cords)
@@ -94,6 +133,7 @@ class PLAYER
     return puts "spot has been already taken!"  unless empty?(cords_int)
     cords_int
   end
+
 
   def num?(str)
     !!Integer(str)
@@ -110,9 +150,19 @@ class PLAYER
     y = cords_int[1]
     true if @board[x, y] == " "
   end
+
+
 end
 
 require 'matrix'
 c = XO.new
 c.start
 
+
+# puts "   │ 1 │ 2 │ 3 │"
+#puts "───┼───┼───┼───┤"
+#puts " 1 │ #{@board[0, 0]} │ #{@board[0, 1]} │ #{@board[0, 2]} │"
+#puts "───┼───┼───┼───┤"
+#puts " 2 │ #{@board[1, 0]} │ #{@board[1, 1]} │ #{@board[1, 2]} │"
+#puts "───┼───┼───┼───┤"
+#puts " 3 │ #{@board[2, 0]} │ #{@board[2, 1]} │ #{@board[2, 2]} │"

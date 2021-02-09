@@ -1,0 +1,9 @@
+Changelog
+XO game v0.4 
+
+version 0.4 09.02.2021
+changes:
+    - added changelog (finaly)
+    - divided board and player classes into two separate
+    - added proceduraly generated map
+    - fixed minor bugs
