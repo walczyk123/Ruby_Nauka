@@ -1,6 +1,18 @@
 Changelog
-XO game v0.4 
+XO game v0.5 
 
+==========================================================
+
+version 0.5 10.02.2021
+changes:
+    - added bot player
+    - added new game modes: player vs bot, bot vs bot
+
+known issues:
+    - game is infinite
+    - after placing in wrong cordinates player lose 1 turn
+
+==========================================================
 version 0.4 09.02.2021
 changes:
     - added changelog (finaly)

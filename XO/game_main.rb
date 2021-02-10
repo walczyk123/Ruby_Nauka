@@ -1,4 +1,4 @@
-class XO
+class Xo
   def start
     say_hello
     game_mode if STDIN.gets.chomp == "y"
@@ -25,10 +25,10 @@ class XO
 
   def pvp
     puts "Let's fight"
-    b1 = BOARD.new(3)
+    b1 = Board.new(3)
     b1.generate
-    p1 = PLAYER.new(1, "x", b1)
-    p2 = PLAYER.new(2, "o", b1)
+    p1 = Player.new(1, "x", b1)
+    p2 = Player.new(2, "o", b1)
     until check
       b1.show
       p1.play_turn
@@ -38,11 +38,31 @@ class XO
   end
 
   def pve
-    puts "wiec wybrales smierc, rozERWE CIE NA KAWałki"
+    puts "Now you will face pretty dumb AI"
+    b1 = Board.new(3)
+    b1.generate
+    p1 = Player.new(1, "x", b1)
+    p2 = Bot.new(2, "o", b1)
+    until check
+      b1.show
+      p1.play_turn
+      b1.show
+      p2.play_turn
+    end
   end
 
   def eve
-    puts "I rzekl mędrzec do kutasów - walczcie, kto wygra, czeka go nagroda"
+    puts "After all, they don't even know which side to hold the sword"
+    b1 = Board.new(3)
+    b1.generate
+    p1 = Bot.new(1, "x", b1)
+    p2 = Bot.new(2, "o", b1)
+    until check
+      b1.show
+      p1.play_turn
+      b1.show
+      p2.play_turn
+    end
   end
 
   def stupid_error
@@ -55,7 +75,7 @@ class XO
 
 end
 
-class PLAYER
+class Player
   def initialize(id, sign, arena)
     @pl_id = id
     @pl_sign = sign
@@ -69,7 +89,21 @@ class PLAYER
 
 end
 
-class BOARD
+class Bot
+  def initialize(id, sign, arena)
+    @pl_id = id
+    @pl_sign = sign
+    @global_board= arena
+  end
+
+  def play_turn
+    puts "Now its bot's turn #{@pl_id}, wait for his move"
+    @global_board.bot_insert(@pl_sign)
+  end
+end
+
+class Board
+  WAIT=1
   def initialize(size)
     @size=size
   end
@@ -86,27 +120,21 @@ class BOARD
     end
   end
 
-  def header
-    print "   │"
-    (1..(@size)).each do |a|
-      print " " + (a-1).to_s + " │"
+  def bot_insert(sign)
+    cords_int=Array.new(2)
+    (1..cords_int.length+1).each do |a|
+      cords_int[a-1] = rand(3)
     end
-    print("\n")
-  end
-
-  def contour
-    (1..@size + 1).each do
-      print "───┼"
-      end
-    print("\n")
-  end
-
-  def horizontal(row)
-     print " #{row-1} │"
-    (1..@size).each do |a|
-      print " " + @board[a-1, row-1].to_s+ " │"
+    sleep(WAIT)
+    puts "Bot put his mark on X: #{(cords_int[0])}, Y: #{cords_int[1]}"
+    if empty?(cords_int)
+      @board[cords_int[0], cords_int[1]] = sign
+      true
+    else
+      puts "spot has been already taken!"
+      false
     end
-    print("\n")
+    sleep(WAIT)
   end
 
   def insert(sign)
@@ -126,7 +154,7 @@ class BOARD
     #end
   end
 
-  def good?(cords)
+  private def good?(cords)
     return puts "wrong char!"  unless num?(cords[0]) && num?(cords[1])
     return puts "number is out of boundary!"  unless good_num?(cords[0]) && good_num?(cords[1])
     cords_int = cords.map(&:to_i)
@@ -134,35 +162,47 @@ class BOARD
     cords_int
   end
 
+  private def header
+    print "   │"
+    (1..(@size)).each do |a|
+      print " " + (a-1).to_s + " │"
+    end
+    print("\n")
+  end
 
-  def num?(str)
+  private def contour
+    (1..@size + 1).each do
+      print "───┼"
+    end
+    print("\n")
+  end
+
+  private def horizontal(row)
+    print " #{row-1} │"
+    (1..@size).each do |a|
+      print " " + @board[a-1, row-1].to_s+ " │"
+    end
+    print("\n")
+  end
+
+  private def num?(str)
     !!Integer(str)
     rescue ArgumentError, TypeError
     false
   end
 
-  def good_num?(str)
+  private def good_num?(str)
     [0, 1, 2].include?(Integer(str))
   end
 
-  def empty?(cords_int)
+  private def empty?(cords_int)
     x = cords_int[0]
     y = cords_int[1]
     true if @board[x, y] == " "
   end
 
-
 end
 
 require 'matrix'
-c = XO.new
+c = Xo.new
 c.start
-
-
-# puts "   │ 1 │ 2 │ 3 │"
-#puts "───┼───┼───┼───┤"
-#puts " 1 │ #{@board[0, 0]} │ #{@board[0, 1]} │ #{@board[0, 2]} │"
-#puts "───┼───┼───┼───┤"
-#puts " 2 │ #{@board[1, 0]} │ #{@board[1, 1]} │ #{@board[1, 2]} │"
-#puts "───┼───┼───┼───┤"
-#puts " 3 │ #{@board[2, 0]} │ #{@board[2, 1]} │ #{@board[2, 2]} │"
