@@ -1,5 +1,20 @@
 Changelog
-XO game v0.5 
+XO game v1.0 
+
+==========================================================
+
+version 1.0 11.02.2021  
+
+Game is now playable!  
+
+changes:
+    - checking rows, cols and diagonals is now working
+    - added checking if there is an available spot
+    - added end game screen that indicates a winner
+
+known issues:
+    - after player1 wins, player2 still need to type a cordinates
+    - after placing in wrong cordinates player lose 1 turn (still)
 
 ==========================================================
 

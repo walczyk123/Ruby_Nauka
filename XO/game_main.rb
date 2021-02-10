@@ -1,78 +1,80 @@
-class Xo
+class CrossCirlce
   def start
     say_hello
     game_mode if STDIN.gets.chomp == "y"
     gam_mod = STDIN.gets.chomp
-    pvp if gam_mod == '1'
-    pve if gam_mod == '2'
-    eve if gam_mod == '3'
-    stupid_error
+    case gam_mod
+    when "1"
+      game(1)
+    when "2"
+      game(2)
+    when "3"
+      game(3)
+    else
+      stupid_error
+    end
   end
 
-  def say_hello
+  private def say_hello
     puts "Welcome Adventurer"
     sleep 0.5
     puts "Do you want to play a game? [y / n]"
   end
 
-  def game_mode
-    puts "Excelent"
+  private def game_mode
+    puts "Excellent"
     sleep 0.5
     puts "Pick game mode:"
     sleep 0.5
-    puts "1. PVP \n2. PVE \n3. EVE"
+    puts "1. Player vs Player \n2. Player vs Bot \n3. Bot vs Bot"
   end
 
-  def pvp
+  private def game(mode)
     puts "Let's fight"
     b1 = Board.new(3)
     b1.generate
-    p1 = Player.new(1, "x", b1)
-    p2 = Player.new(2, "o", b1)
-    until check
+    case mode
+    when 1
+      p1 = Player.new(1, "x", b1)
+      p2 = Player.new(2, "o", b1)
+    when 2
+      p1 = Player.new(1, "x", b1)
+      p2 = Bot.new(2, "o", b1)
+    when 3
+      p1 = Bot.new(1, "x", b1)
+      p2 = Bot.new(2, "o", b1)
+    else
+      puts "something went wrong"
+    end
+    #przekazywac znak a nie na pałe
+    over = false
+    which = 0
+    until over
       b1.show
       p1.play_turn
+      if b1.check("x")
+        over = true
+        which = 1
+      end
       b1.show
       p2.play_turn
+      if b1.check("o")
+        over = true
+        which = 2
+      end
+      if b1.spot?
+        over = true
+      end
     end
+    b1.show
+    # puts "Player#{p1} won a game!" if a
+    puts "Player#{which} won a game!" if (over && (which == 1 || which == 2))
+    puts "And its over, nobody wins :/" if (over && which == 0)
   end
 
-  def pve
-    puts "Now you will face pretty dumb AI"
-    b1 = Board.new(3)
-    b1.generate
-    p1 = Player.new(1, "x", b1)
-    p2 = Bot.new(2, "o", b1)
-    until check
-      b1.show
-      p1.play_turn
-      b1.show
-      p2.play_turn
-    end
+  private def stupid_error
+    puts "why did you do that?"
   end
-
-  def eve
-    puts "After all, they don't even know which side to hold the sword"
-    b1 = Board.new(3)
-    b1.generate
-    p1 = Bot.new(1, "x", b1)
-    p2 = Bot.new(2, "o", b1)
-    until check
-      b1.show
-      p1.play_turn
-      b1.show
-      p2.play_turn
-    end
-  end
-
-  def stupid_error
-    puts "miales tylko jedno robote"
-  end
-
-  def check
-    false
-  end
-
 end
 
 class Player
@@ -86,7 +88,6 @@ class Player
     puts "Your turn Player #{@pl_id}, type x,y: "
     @global_board.insert(@pl_sign)
   end
-
 end
 
 class Bot
@@ -103,7 +104,7 @@ class Bot
 end
 
 class Board
-  WAIT=1
+  WAIT=0.7
   def initialize(size)
     @size=size
   end
@@ -126,7 +127,7 @@ class Board
       cords_int[a-1] = rand(3)
     end
     sleep(WAIT)
-    puts "Bot put his mark on X: #{(cords_int[0])}, Y: #{cords_int[1]}"
+    puts "Bot#{@pl_id} put his mark on X: #{(cords_int[0])}, Y: #{cords_int[1]}"
     if empty?(cords_int)
       @board[cords_int[0], cords_int[1]] = sign
       true
@@ -152,6 +153,28 @@ class Board
     #cos nie tak z tym zapisem, jezeli jest dobry to chce non stop wpisywac
     #(cords_int = good?(cords)) ? (@board[cords_int[0], cords_int[1]] = sign) : false
     #end
+  end
+
+  def check(sign)
+    #troche na pałe sprawdzanie, tu musze jakos bardziej zautomatyzowac
+    # poki co jest zarys, mocno naciagnayo
+    (1..(@size)).each do |r|
+       return true if @board[r-1, 0] == sign && @board[r-1, 1] == sign && @board[r-1, 2] == sign
+    end
+    (1..(@size)).each do |c|
+        return true if @board[0, c-1] == sign && @board[1, c-1] == sign && @board[2, c-1] == sign
+    end
+    return true if @board[0, 0] == sign && @board[1, 1] == sign && @board[2, 2] == sign
+    return true if @board[0, 2] == sign && @board[1, 1] == sign && @board[2, 0] == sign
+    false
+  end
+  def spot?
+    (1..(@size)).each do |r|
+      (1..(@size)).each do |c|
+        return false if @board[r-1, c-1] == " "
+      end
+    end
+    true
   end
 
   private def good?(cords)
@@ -204,5 +227,5 @@ class Board
 end
 
 require 'matrix'
-c = Xo.new
+c = CrossCirlce.new
 c.start

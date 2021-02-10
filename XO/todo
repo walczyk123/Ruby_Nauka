@@ -1,3 +1,6 @@
-1. make some clearance in pvp, pve and eve methods
-2. make check method functional
+1. solve a problem when somebody puts wrong cordinates, then loses turn  
+2. checking rows, cols and diagonals of board, need to be more automated  
+3. if check function is called, the argument need to be passed from player not inputed by hand  
+4. after no matter who wins, instantly break a game  
+
 

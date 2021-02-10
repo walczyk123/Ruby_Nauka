@@ -4,7 +4,9 @@ Jest to pierwszy "poważniejszy" projekt, jakim jest napisanie gry w kółko krz
 Przewiduje 3 tryby gry:  
 -> Gracz vs Gracz,   
 -> Gracz vs Komputer,   
--> Komputer vs Komputer  
+-> Komputer vs Komputer.
+
+Gra obecnie znajduje się w pierwszej wersji grywalnej.
 
 Uwagi:  
 - Skupic sie na szkielecie  
