@@ -1,5 +1,18 @@
 Changelog
-XO game v1.0 
+XO game v1.1
+
+==========================================================
+
+version 1.1 13.02.202
+changes:
+    - when player (or bot) puts mark on wrong tile, or put wrong
+        coordinates (eg. out of map, or cord. is not an a number)
+        the game will tell him to redo his move. Player don't
+        loose his turn anymore.
+    - made game code more clear.
+
+known issues:
+    - after player1 wins, player2 still need to type a coordinates.
 
 ==========================================================
 
@@ -13,8 +26,8 @@ changes:
     - added end game screen that indicates a winner
 
 known issues:
-    - after player1 wins, player2 still need to type a cordinates
-    - after placing in wrong cordinates player lose 1 turn (still)
+    - after player1 wins, player2 still need to type a coordinates
+    - after placing in wrong coordinates player lose 1 turn (still)
 
 ==========================================================
 
@@ -25,7 +38,7 @@ changes:
 
 known issues:
     - game is infinite
-    - after placing in wrong cordinates player lose 1 turn
+    - after placing in wrong coordinates player lose 1 turn
 
 ==========================================================
 version 0.4 09.02.2021

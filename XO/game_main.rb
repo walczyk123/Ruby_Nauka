@@ -81,12 +81,15 @@ class Player
   def initialize(id, sign, arena)
     @pl_id = id
     @pl_sign = sign
-    @global_board= arena
+    @global_board = arena
   end
 
   def play_turn
-    puts "Your turn Player #{@pl_id}, type x,y: "
-    @global_board.insert(@pl_sign)
+    good_move = false
+    until good_move
+      puts "Your turn Player #{@pl_id}, type x,y: "
+      good_move = @global_board.insert(@pl_sign)
+    end
   end
 end
 
@@ -94,19 +97,23 @@ class Bot
   def initialize(id, sign, arena)
     @pl_id = id
     @pl_sign = sign
-    @global_board= arena
+    @global_board = arena
   end
 
   def play_turn
-    puts "Now its bot's turn #{@pl_id}, wait for his move"
-    @global_board.bot_insert(@pl_sign)
+    good_move = false
+    until good_move
+      puts "Now its bot's turn #{@pl_id}, wait for his move"
+      @global_board.bot_insert(@pl_sign)
+    end
   end
 end
 
 class Board
-  WAIT=0.7
+  WAIT = 0.7
+
   def initialize(size)
-    @size=size
+    @size = size
   end
 
   def generate
@@ -122,9 +129,9 @@ class Board
   end
 
   def bot_insert(sign)
-    cords_int=Array.new(2)
-    (1..cords_int.length+1).each do |a|
-      cords_int[a-1] = rand(3)
+    cords_int = Array.new(2)
+    (1..cords_int.length + 1).each do |a|
+      cords_int[a - 1] = rand(3)
     end
     sleep(WAIT)
     puts "Bot#{@pl_id} put his mark on X: #{(cords_int[0])}, Y: #{cords_int[1]}"
@@ -139,7 +146,6 @@ class Board
   end
 
   def insert(sign)
-    #while true
     place = gets.chomp
     cords = place.split(",")
     puts "X: #{Integer(cords[0])}, Y: #{cords[1]}"
@@ -150,45 +156,43 @@ class Board
     else
       false
     end
-    #cos nie tak z tym zapisem, jezeli jest dobry to chce non stop wpisywac
-    #(cords_int = good?(cords)) ? (@board[cords_int[0], cords_int[1]] = sign) : false
-    #end
   end
 
   def check(sign)
     #troche na pałe sprawdzanie, tu musze jakos bardziej zautomatyzowac
     # poki co jest zarys, mocno naciagnayo
     (1..(@size)).each do |r|
-       return true if @board[r-1, 0] == sign && @board[r-1, 1] == sign && @board[r-1, 2] == sign
+      return true if @board[r - 1, 0] == sign && @board[r - 1, 1] == sign && @board[r - 1, 2] == sign
     end
     (1..(@size)).each do |c|
-        return true if @board[0, c-1] == sign && @board[1, c-1] == sign && @board[2, c-1] == sign
+      return true if @board[0, c - 1] == sign && @board[1, c - 1] == sign && @board[2, c - 1] == sign
     end
     return true if @board[0, 0] == sign && @board[1, 1] == sign && @board[2, 2] == sign
     return true if @board[0, 2] == sign && @board[1, 1] == sign && @board[2, 0] == sign
     false
   end
+
   def spot?
     (1..(@size)).each do |r|
       (1..(@size)).each do |c|
-        return false if @board[r-1, c-1] == " "
+        return false if @board[r - 1, c - 1] == " "
       end
     end
     true
   end
 
   private def good?(cords)
-    return puts "wrong char!"  unless num?(cords[0]) && num?(cords[1])
-    return puts "number is out of boundary!"  unless good_num?(cords[0]) && good_num?(cords[1])
+    return puts "wrong char!" unless num?(cords[0]) && num?(cords[1])
+    return puts "number is out of boundary!" unless good_num?(cords[0]) && good_num?(cords[1])
     cords_int = cords.map(&:to_i)
-    return puts "spot has been already taken!"  unless empty?(cords_int)
+    return puts "spot has been already taken!" unless empty?(cords_int)
     cords_int
   end
 
   private def header
     print "   │"
     (1..(@size)).each do |a|
-      print " " + (a-1).to_s + " │"
+      print " " + (a - 1).to_s + " │"
     end
     print("\n")
   end
@@ -201,16 +205,16 @@ class Board
   end
 
   private def horizontal(row)
-    print " #{row-1} │"
+    print " #{row - 1} │"
     (1..@size).each do |a|
-      print " " + @board[a-1, row-1].to_s+ " │"
+      print " " + @board[a - 1, row - 1].to_s + " │"
     end
     print("\n")
   end
 
   private def num?(str)
     !!Integer(str)
-    rescue ArgumentError, TypeError
+  rescue ArgumentError, TypeError
     false
   end
 
